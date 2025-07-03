@@ -259,6 +259,158 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://yanfeng-nie.github.io/2025/07/03/%E5%87%B8%E9%9B%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yanfeng Nie">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2025/07/03/%E5%87%B8%E9%9B%86/" itemprop="url">凸集</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2025-07-03T15:18:56+08:00">
+                2025-07-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%87%B8%E4%BC%98%E5%8C%96/" itemprop="url" rel="index">
+                    <span itemprop="name">凸优化</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          一、仿射集合和凸集直线与线段穿越点 $x_1$ 与 $x_2$ 的直线定义为 $y=\theta x_1+(1-\theta)x_2,\theta\in\mathbb{R}$，参数 $\theta$ 若在 $0$ 与 $1$ 间变动则构成了 $x_1$ 与 $x_2$ 间的闭合线段
+仿射集合如果一个集合（设为 $C\subseteq\mathbb{R}^n$）中任意两个不同点的直线仍在集合 $C$ 中，则称 $C\subseteq\mathbb{R}^n$ 是仿射的
+如果上述概念中的两个不同点拓展到 $n$ 个不同点，那根据仿射集合定义可以得到以下结论：若 $C$ 是仿射的
+
+x_1,x_2,
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2025/07/03/%E5%87%B8%E9%9B%86/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://yanfeng-nie.github.io/2025/07/03/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%9105-%E5%9D%97%E8%AE%BE%E5%A4%87%E5%9F%BA%E6%9C%AC%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%88%9B%E5%BB%BA/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -356,8 +508,7 @@
 你喜欢的IDE
 二、所需结构体1、基本知识在Linux系统中，操作硬盘等存储设备的抽象通常被称作块设备(block device)，块设备本体（忽略对块设备进行操作的那一堆东西）就两个：
 12struct block_device;struct gendisk;
-
-如果形象地说，那就是：在块设备抽象的层面上，gendisk在block_device下方，换句话说就是更底层，block_device无法直接调用IO接口操作硬盘，但gen
+如果形象地说，那就是：在块设备抽象的层面上，gendisk在block_device下方，换句话说就是更底层，block_device无法直接调用IO接口操作硬盘，但gend
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -505,9 +656,10 @@
       
         
           
-          一台个人计算机，从软件层面说可以简单地分为两部分：用户空间（User Space）和内核空间（Kernel Space）。用户通过**系统调用（System Call）**来建立用户空间与内核空间的传输通道，以便调用操作系统的API来对硬件进行操作。
+          一台个人计算机，从软件层面说可以简单地分为两部分：用户空间（User Space）和内核空间（Kernel Space）。用户通过系统调用（System Call）来建立用户空间与内核空间的传输通道，以便调用操作系统的API来对硬件进行操作。
 在许多场景下，用户需要对系统本身的一些功能做出修改，比如写一个新的驱动，抑或是研发更快的文件访问程序。然而，针对每次改动或者添加都去修改源码、编译、安装内核在时间成本上显得不现实，因此就需要内核开发。本文介绍编写一个基本的Linux内核程序所需要的步骤。
-（本文所介绍的内核开发在任意版本的Linux内核中均可运行，不存在版本差异，这是最最基本的东
+（本文所介绍的内核开发在任意版本的Linux内核中均可运行，不存在版本差异，这是最最基本的东西）
+一
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -752,7 +904,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -763,7 +915,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -774,7 +926,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -997,6 +1149,28 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
 
   
 
