@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="C语言,Linux,内核开发,kernel," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、环境准备Linux Ubuntu v5.15+ （不推荐v6.0+因为很多库函数被改动，可能本教程里的源代码可以稳定运行，但换个内核就会碰到各种各样的问题） 你喜欢的IDE 二、所需结构体1、基本知识在Linux系统中，操作硬盘等存储设备的抽象通常被称作块设备(block device)，块设备本体（忽略对块设备进行操作的那一堆东西）就两个： 12struct block_device;str">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux内核开发05-块设备基本注册与创建">
+<meta property="og:url" content="https://yanfeng-nie.github.io/2025/07/03/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%9105-%E5%9D%97%E8%AE%BE%E5%A4%87%E5%9F%BA%E6%9C%AC%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%88%9B%E5%BB%BA/index.html">
+<meta property="og:site_name" content="Yanfeng Nie">
+<meta property="og:description" content="一、环境准备Linux Ubuntu v5.15+ （不推荐v6.0+因为很多库函数被改动，可能本教程里的源代码可以稳定运行，但换个内核就会碰到各种各样的问题） 你喜欢的IDE 二、所需结构体1、基本知识在Linux系统中，操作硬盘等存储设备的抽象通常被称作块设备(block device)，块设备本体（忽略对块设备进行操作的那一堆东西）就两个： 12struct block_device;str">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-07-03T07:05:13.000Z">
+<meta property="article:modified_time" content="2025-07-03T07:11:10.186Z">
+<meta property="article:author" content="Yanfeng Nie">
+<meta property="article:tag" content="C语言">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="内核开发">
+<meta property="article:tag" content="kernel">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://yanfeng-nie.github.io/2025/07/03/Linux内核开发05-块设备基本注册与创建/"/>
+
+
+
+
+
+  <title>Linux内核开发05-块设备基本注册与创建 | Yanfeng Nie</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yanfeng Nie</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">A Personal Blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://yanfeng-nie.github.io/2025/07/03/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%9105-%E5%9D%97%E8%AE%BE%E5%A4%87%E5%9F%BA%E6%9C%AC%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%88%9B%E5%BB%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yanfeng Nie">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Linux内核开发05-块设备基本注册与创建</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2025-07-03T15:05:13+08:00">
+                2025-07-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux内核开发教程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、环境准备"><a href="#一、环境准备" class="headerlink" title="一、环境准备"></a><strong>一、环境准备</strong></h1><p>Linux Ubuntu v5.15+ （不推荐v6.0+因为很多库函数被改动，可能本教程里的源代码可以稳定运行，但换个内核就会碰到各种各样的问题）</p>
+<p>你喜欢的IDE</p>
+<h1 id="二、所需结构体"><a href="#二、所需结构体" class="headerlink" title="二、所需结构体"></a><strong>二、所需结构体</strong></h1><h2 id="1、基本知识"><a href="#1、基本知识" class="headerlink" title="1、基本知识"></a>1、基本知识</h2><p>在Linux系统中，操作硬盘等存储设备的抽象通常被称作<strong>块设备(block device)</strong>，块设备本体（忽略对块设备进行操作的那一堆东西）就两个：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">block_device</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">gendisk</span>;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果形象地说，那就是：在块设备抽象的层面上，<strong>gendisk在block_device下方，换句话说就是更底层</strong>，block_device无法直接调用IO接口操作硬盘，但gendisk可以，但gendisk没有提供向上兼容的接口，导致需要block_device来做一个桥接。</p>
+<h2 id="2、block-device"><a href="#2、block-device" class="headerlink" title="2、block_device"></a>2、block_device</h2><p>源码地址：<a target="_blank" rel="noopener" href="https://elixir.bootlin.com/linux/v5.15/source/include/linux/blk_types.h#L23">block_device源码</a></p>
+<p>不想进网页看的看下面这个就够了：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">block_device</span> &#123;</span></span><br><span class="line">	<span class="type">sector_t</span>		            bd_start_sect;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">disk_stats</span> __<span class="title">percpu</span> *<span class="title">bd_stats</span>;</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span>		        bd_stamp;</span><br><span class="line">	<span class="type">bool</span>			            bd_read_only;	<span class="comment">/* read-only policy */</span></span><br><span class="line">	<span class="type">dev_t</span>			            bd_dev;</span><br><span class="line">	<span class="type">int</span>			                bd_openers;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">inode</span> *		        <span class="title">bd_inode</span>;</span>	<span class="comment">/* will die */</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">super_block</span> *	    <span class="title">bd_super</span>;</span></span><br><span class="line">	<span class="type">void</span> *			            bd_claiming;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">device</span>		        <span class="title">bd_device</span>;</span></span><br><span class="line">	<span class="type">void</span> *			            bd_holder;</span><br><span class="line">	<span class="type">int</span>			                bd_holders;</span><br><span class="line">	<span class="type">bool</span>			            bd_write_holder;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">kobject</span>		       *<span class="title">bd_holder_dir</span>;</span></span><br><span class="line">	u8			                bd_partno;</span><br><span class="line">	<span class="type">spinlock_t</span>		            bd_size_lock; <span class="comment">/* for bd_inode-&gt;i_size updates */</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">gendisk</span> *	        <span class="title">bd_disk</span>;</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">/* The counter of freeze processes */</span></span><br><span class="line">	<span class="type">int</span>			                bd_fsfreeze_count;</span><br><span class="line">	<span class="comment">/* Mutex for freeze */</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">mutex</span>		        <span class="title">bd_fsfreeze_mutex</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">super_block</span>	       *<span class="title">bd_fsfreeze_sb</span>;</span></span><br><span class="line"></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">partition_meta_info</span> *<span class="title">bd_meta_info</span>;</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> CONFIG_FAIL_MAKE_REQUEST</span></span><br><span class="line">	<span class="type">bool</span>			            bd_make_it_fail;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对初学者来说上面这些都不重要，我只是放在这里显得我的文章不那么短小而已，等到后面开发更深入时自然会理解这些变量都是用来干嘛的。</p>
+<p>但下面这个就挺重要了：</p>
+<h2 id="3、gendisk"><a href="#3、gendisk" class="headerlink" title="3、gendisk"></a>3、gendisk</h2><p>在初学块设备驱动开发时，gendisk所占的份量比block_device要大得多，因为gendisk初始化涉及的变量很多，这里先贴源码。</p>
+<p>源码地址：<a target="_blank" rel="noopener" href="https://elixir.bootlin.com/linux/v5.15/source/include/linux/genhd.h#L127">gendisk源码</a></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">gendisk</span> &#123;</span></span><br><span class="line">	<span class="comment">/* major, first_minor and minors are input parameters only,</span></span><br><span class="line"><span class="comment">	 * don&#x27;t use directly.  Use disk_devt() and disk_max_parts().</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="type">int</span> major;			<span class="comment">/* major number of driver */</span></span><br><span class="line">	<span class="type">int</span> first_minor;</span><br><span class="line">	<span class="type">int</span> minors;                     <span class="comment">/* maximum number of minors, =1 for</span></span><br><span class="line"><span class="comment">                                         * disks that can&#x27;t be partitioned. */</span></span><br><span class="line"></span><br><span class="line">	<span class="type">char</span> disk_name[DISK_NAME_LEN];	<span class="comment">/* name of major driver */</span></span><br><span class="line"></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">short</span> events;		<span class="comment">/* supported events */</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">short</span> event_flags;	<span class="comment">/* flags related to event processing */</span></span><br><span class="line"></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">xarray</span> <span class="title">part_tbl</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">block_device</span> *<span class="title">part0</span>;</span></span><br><span class="line"></span><br><span class="line">	<span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">block_device_operations</span> *<span class="title">fops</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">request_queue</span> *<span class="title">queue</span>;</span></span><br><span class="line">	<span class="type">void</span> *private_data;</span><br><span class="line"></span><br><span class="line">	<span class="type">int</span> flags;</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span> state;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> GD_NEED_PART_SCAN		0</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> GD_READ_ONLY			1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> GD_DEAD				2</span></span><br><span class="line"></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">mutex</span> <span class="title">open_mutex</span>;</span>	<span class="comment">/* open/close mutex */</span></span><br><span class="line">	<span class="type">unsigned</span> open_partitions;	<span class="comment">/* number of open partitions */</span></span><br><span class="line"></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">backing_dev_info</span>	*<span class="title">bdi</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">kobject</span> *<span class="title">slave_dir</span>;</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> CONFIG_BLOCK_HOLDER_DEPRECATED</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">slave_bdevs</span>;</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">timer_rand_state</span> *<span class="title">random</span>;</span></span><br><span class="line">	<span class="type">atomic_t</span> sync_io;		<span class="comment">/* RAID */</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">disk_events</span> *<span class="title">ev</span>;</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span>  CONFIG_BLK_DEV_INTEGRITY</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">kobject</span> <span class="title">integrity_kobj</span>;</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span>	<span class="comment">/* CONFIG_BLK_DEV_INTEGRITY */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> IS_ENABLED(CONFIG_CDROM)</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">cdrom_device_info</span> *<span class="title">cdi</span>;</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">	<span class="type">int</span> node_id;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">badblocks</span> *<span class="title">bb</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">lockdep_map</span> <span class="title">lockdep_map</span>;</span></span><br><span class="line">	u64 diskseq;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>在最基本的gendisk初始化里，我们需要用到源码中的这几个变量（接下来重点关注）：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> major; <span class="comment">//主序列号</span></span><br><span class="line"><span class="type">int</span> minors; <span class="comment">//次序列号的数量</span></span><br><span class="line"><span class="type">int</span> first_minor; <span class="comment">//第一个次序列号</span></span><br></pre></td></tr></table></figure>
+
+<p>在本文最后的实验代码里也会有一些<strong>外加的</strong>变量，那些有没有都不重要。这就是个初学者文章，不要深究，先做再说。</p>
+<h1 id="三、逻辑流程"><a href="#三、逻辑流程" class="headerlink" title="三、逻辑流程"></a><strong>三、逻辑流程</strong></h1><p>从注册块设备到创建好gendisk一共有以下<strong>5步</strong>：</p>
+<ol>
+<li>给block_device分配内存</li>
+<li>注册并获取块设备主序列号</li>
+<li>给gendisk分配内存</li>
+<li>给分配好内存的gendisk进行各个变量的设置</li>
+<li>加入肯德基豪华套餐 添加设置好的gendisk</li>
+</ol>
+<p>翻译成代码就是以下五个基本的代码步骤：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span>  bdev = kzalloc(<span class="keyword">sizeof</span>(*bdev), GFP_KERNEL);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2.</span>  register_major = register_blkdev(<span class="number">0</span>, DEV_NAME);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">3.</span>  gd = blk_alloc_disk(NUMA_NO_NODE);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">4.</span></span><br><span class="line">gd-&gt;major = register_major;</span><br><span class="line">gd-&gt;first_minor = <span class="number">0</span>;</span><br><span class="line">gd-&gt;minors = <span class="number">10</span>;</span><br><span class="line">gd-&gt;fops = &amp;bdev_ops;</span><br><span class="line">gd-&gt;private_data = bdev;</span><br><span class="line">set_capacity(gd, DISK_SIZE);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">5.</span>  err = add_disk(gd);</span><br></pre></td></tr></table></figure>
+
+<p>接下来我将对这五个步骤中比较容易出现错误的函数做分析。</p>
+<h1 id="四、API分析"><a href="#四、API分析" class="headerlink" title="四、API分析"></a><strong>四、API分析</strong></h1><p>在目前网上的教程中，如果你去搜一搜，会发现一个极其容易导致编译错误，并且本身的使用与内核版本不匹配，在v5.0+内核中被完全删除的函数：alloc_disk(int)，但实际开发过程中应该使用的是 blk_alloc_disk(node_id)</p>
+<h2 id="1、blk-alloc-disk-node-id"><a href="#1、blk-alloc-disk-node-id" class="headerlink" title="1、blk_alloc_disk(node_id)"></a><strong>1、blk_alloc_disk(node_id)</strong></h2><p>为什么要使用这个函数从而将 alloc_disk(int) 删去呢，开发者是这么说的：</p>
+<blockquote>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Christoph Hellwig:</span><br><span class="line"></span><br><span class="line">Most drivers should use and have been converted to use blk_alloc_disk</span><br><span class="line">and blk_mq_alloc_disk.  Only the scsi ULPs and dasd still allocate</span><br><span class="line">a disk separately from the request_queue, so don&#x27;t bother with</span><br><span class="line">convenience macros for something that should not see significant</span><br><span class="line">new users and remove these wrappers.</span><br><span class="line"></span><br><span class="line">Signed-off-by: Christoph Hellwig &lt;hch@lst.de&gt;</span><br><span class="line">---</span><br><span class="line"> drivers/s390/block/dasd_genhd.c |  5 ++++-</span><br><span class="line"> drivers/scsi/sd.c               |  3 ++-</span><br><span class="line"> drivers/scsi/sr.c               |  4 +++-</span><br><span class="line"> include/linux/genhd.h           | 10 ----------</span><br><span class="line"> 4 files changed, 9 insertions(+), 13 deletions(-)</span><br></pre></td></tr></table></figure></blockquote>
+<p>源网址贴在这里：<a target="_blank" rel="noopener" href="https://patchwork.kernel.org/project/linux-block/patch/20210816131910.615153-6-hch@lst.de/">为什么要使用blk_alloc_disk</a></p>
+<p>但 blk_alloc_disk(node_id) 的强制使用也引出了一个问题：参数怎么填?</p>
+<p>原先 alloc_disk(int) 的默认参数是填0，但blk_alloc_disk显然不可能也用0，所以用什么，翻开源代码<a target="_blank" rel="noopener" href="https://elixir.bootlin.com/linux/v5.15/source/include/linux/numa.h#L14%E4%BC%9A%E5%8F%91%E7%8E%B0%E4%B8%80%E4%B8%AA%E4%B8%9C%E8%A5%BF%E5%8F%ABNUMA_NO_NODE%EF%BC%9A">https://elixir.bootlin.com/linux/v5.15/source/include/linux/numa.h#L14会发现一个东西叫NUMA_NO_NODE：</a></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span>	NUMA_NO_NODE	(-1)</span></span><br></pre></td></tr></table></figure>
+
+<p>对node_id进行直接解释就会很容易推出这个id从0开始，所以-1作为一种默认选项变得理所当然了，所以我们分配内存的代码就应该是：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gd = blk_alloc_disk(NUMA_NO_NODE);</span><br></pre></td></tr></table></figure>
+
+<h2 id="2、add-disk-struct-gendisk"><a href="#2、add-disk-struct-gendisk" class="headerlink" title="2、add_disk(struct gendisk*)"></a>2、add_disk(struct gendisk*)</h2><p>这个函数如此定义在<strong>linux&#x2F;genhd.h</strong>中：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">int</span> <span class="title function_">add_disk</span><span class="params">(<span class="keyword">struct</span> gendisk *disk)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">return</span> device_add_disk(<span class="literal">NULL</span>, disk, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> 很明显这是间接调用，继续查看发现device_add_disk被具体定义在<strong>block&#x2F;genhd.c</strong>中：<a target="_blank" rel="noopener" href="https://elixir.bootlin.com/linux/v5.15/source/block/genhd.c#L383">device_add_disk()</a></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">device_add_disk</span><span class="params">(<span class="keyword">struct</span> device *parent, <span class="keyword">struct</span> gendisk *disk,</span></span><br><span class="line"><span class="params">		     <span class="type">const</span> <span class="keyword">struct</span> attribute_group **groups)</span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">device</span> *<span class="title">ddev</span> =</span> disk_to_dev(disk);</span><br><span class="line">	<span class="type">int</span> ret;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * The disk queue should now be all set with enough information about</span></span><br><span class="line"><span class="comment">	 * the device for the elevator code to pick an adequate default</span></span><br><span class="line"><span class="comment">	 * elevator if one is needed, that is, for devices requesting queue</span></span><br><span class="line"><span class="comment">	 * registration.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	elevator_init_mq(disk-&gt;<span class="built_in">queue</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * If the driver provides an explicit major number it also must provide</span></span><br><span class="line"><span class="comment">	 * the number of minors numbers supported, and those will be used to</span></span><br><span class="line"><span class="comment">	 * setup the gendisk.</span></span><br><span class="line"><span class="comment">	 * Otherwise just allocate the device numbers for both the whole device</span></span><br><span class="line"><span class="comment">	 * and all partitions from the extended dev_t space.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">if</span> (disk-&gt;major) &#123;</span><br><span class="line">		<span class="keyword">if</span> (WARN_ON(!disk-&gt;minors))</span><br><span class="line">			<span class="keyword">return</span> -EINVAL;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (disk-&gt;minors &gt; DISK_MAX_PARTS) &#123;</span><br><span class="line">			pr_err(<span class="string">&quot;block: can&#x27;t allocate more than %d partitions\n&quot;</span>,</span><br><span class="line">				DISK_MAX_PARTS);</span><br><span class="line">			disk-&gt;minors = DISK_MAX_PARTS;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (WARN_ON(disk-&gt;minors))</span><br><span class="line">			<span class="keyword">return</span> -EINVAL;</span><br><span class="line"></span><br><span class="line">		ret = blk_alloc_ext_minor();</span><br><span class="line">		<span class="keyword">if</span> (ret &lt; <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> ret;</span><br><span class="line">		disk-&gt;major = BLOCK_EXT_MAJOR;</span><br><span class="line">		disk-&gt;first_minor = ret;</span><br><span class="line">		disk-&gt;flags |= GENHD_FL_EXT_DEVT;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	ret = disk_alloc_events(disk);</span><br><span class="line">	<span class="keyword">if</span> (ret)</span><br><span class="line">		<span class="keyword">goto</span> out_free_ext_minor;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* delay uevents, until we scanned partition table */</span></span><br><span class="line">	dev_set_uevent_suppress(ddev, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">	ddev-&gt;parent = parent;</span><br><span class="line">	ddev-&gt;groups = groups;</span><br><span class="line">	dev_set_name(ddev, <span class="string">&quot;%s&quot;</span>, disk-&gt;disk_name);</span><br><span class="line">	<span class="keyword">if</span> (!(disk-&gt;flags &amp; GENHD_FL_HIDDEN))</span><br><span class="line">		ddev-&gt;devt = MKDEV(disk-&gt;major, disk-&gt;first_minor);</span><br><span class="line">	ret = device_add(ddev);</span><br><span class="line">	<span class="keyword">if</span> (ret)</span><br><span class="line">		<span class="keyword">goto</span> out_disk_release_events;</span><br><span class="line">	<span class="keyword">if</span> (!sysfs_deprecated) &#123;</span><br><span class="line">		ret = sysfs_create_link(block_depr, &amp;ddev-&gt;kobj,</span><br><span class="line">					kobject_name(&amp;ddev-&gt;kobj));</span><br><span class="line">		<span class="keyword">if</span> (ret)</span><br><span class="line">			<span class="keyword">goto</span> out_device_del;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * avoid probable deadlock caused by allocating memory with</span></span><br><span class="line"><span class="comment">	 * GFP_KERNEL in runtime_resume callback of its all ancestor</span></span><br><span class="line"><span class="comment">	 * devices</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	pm_runtime_set_memalloc_noio(ddev, <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">	ret = blk_integrity_add(disk);</span><br><span class="line">	<span class="keyword">if</span> (ret)</span><br><span class="line">		<span class="keyword">goto</span> out_del_block_link;</span><br><span class="line"></span><br><span class="line">	disk-&gt;part0-&gt;bd_holder_dir =</span><br><span class="line">		kobject_create_and_add(<span class="string">&quot;holders&quot;</span>, &amp;ddev-&gt;kobj);</span><br><span class="line">	<span class="keyword">if</span> (!disk-&gt;part0-&gt;bd_holder_dir)</span><br><span class="line">		<span class="keyword">goto</span> out_del_integrity;</span><br><span class="line">	disk-&gt;slave_dir = kobject_create_and_add(<span class="string">&quot;slaves&quot;</span>, &amp;ddev-&gt;kobj);</span><br><span class="line">	<span class="keyword">if</span> (!disk-&gt;slave_dir)</span><br><span class="line">		<span class="keyword">goto</span> out_put_holder_dir;</span><br><span class="line"></span><br><span class="line">	ret = bd_register_pending_holders(disk);</span><br><span class="line">	<span class="keyword">if</span> (ret &lt; <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">goto</span> out_put_slave_dir;</span><br><span class="line"></span><br><span class="line">	ret = blk_register_queue(disk);</span><br><span class="line">	<span class="keyword">if</span> (ret)</span><br><span class="line">		<span class="keyword">goto</span> out_put_slave_dir;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (disk-&gt;flags &amp; GENHD_FL_HIDDEN) &#123;</span><br><span class="line">		<span class="comment">/*</span></span><br><span class="line"><span class="comment">		 * Don&#x27;t let hidden disks show up in /proc/partitions,</span></span><br><span class="line"><span class="comment">		 * and don&#x27;t bother scanning for partitions either.</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		disk-&gt;flags |= GENHD_FL_SUPPRESS_PARTITION_INFO;</span><br><span class="line">		disk-&gt;flags |= GENHD_FL_NO_PART_SCAN;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		ret = bdi_register(disk-&gt;bdi, <span class="string">&quot;%u:%u&quot;</span>,</span><br><span class="line">				   disk-&gt;major, disk-&gt;first_minor);</span><br><span class="line">		<span class="keyword">if</span> (ret)</span><br><span class="line">			<span class="keyword">goto</span> out_unregister_queue;</span><br><span class="line">		bdi_set_owner(disk-&gt;bdi, ddev);</span><br><span class="line">		ret = sysfs_create_link(&amp;ddev-&gt;kobj,</span><br><span class="line">					&amp;disk-&gt;bdi-&gt;dev-&gt;kobj, <span class="string">&quot;bdi&quot;</span>);</span><br><span class="line">		<span class="keyword">if</span> (ret)</span><br><span class="line">			<span class="keyword">goto</span> out_unregister_bdi;</span><br><span class="line"></span><br><span class="line">		bdev_add(disk-&gt;part0, ddev-&gt;devt);</span><br><span class="line">		disk_scan_partitions(disk);</span><br><span class="line"></span><br><span class="line">		<span class="comment">/*</span></span><br><span class="line"><span class="comment">		 * Announce the disk and partitions after all partitions are</span></span><br><span class="line"><span class="comment">		 * created. (for hidden disks uevents remain suppressed forever)</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		dev_set_uevent_suppress(ddev, <span class="number">0</span>);</span><br><span class="line">		disk_uevent(disk, KOBJ_ADD);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	disk_update_readahead(disk);</span><br><span class="line">	disk_add_events(disk);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">out_unregister_bdi:</span><br><span class="line">	<span class="keyword">if</span> (!(disk-&gt;flags &amp; GENHD_FL_HIDDEN))</span><br><span class="line">		bdi_unregister(disk-&gt;bdi);</span><br><span class="line">out_unregister_queue:</span><br><span class="line">	blk_unregister_queue(disk);</span><br><span class="line">out_put_slave_dir:</span><br><span class="line">	kobject_put(disk-&gt;slave_dir);</span><br><span class="line">out_put_holder_dir:</span><br><span class="line">	kobject_put(disk-&gt;part0-&gt;bd_holder_dir);</span><br><span class="line">out_del_integrity:</span><br><span class="line">	blk_integrity_del(disk);</span><br><span class="line">out_del_block_link:</span><br><span class="line">	<span class="keyword">if</span> (!sysfs_deprecated)</span><br><span class="line">		sysfs_remove_link(block_depr, dev_name(ddev));</span><br><span class="line">out_device_del:</span><br><span class="line">	device_del(ddev);</span><br><span class="line">out_disk_release_events:</span><br><span class="line">	disk_release_events(disk);</span><br><span class="line">out_free_ext_minor:</span><br><span class="line">	<span class="keyword">if</span> (disk-&gt;major == BLOCK_EXT_MAJOR)</span><br><span class="line">		blk_free_ext_minor(disk-&gt;first_minor);</span><br><span class="line">	<span class="keyword">return</span> WARN_ON_ONCE(ret); <span class="comment">/* keep until all callers handle errors */</span></span><br><span class="line">&#125;</span><br><span class="line">EXPORT_SYMBOL(device_add_disk);</span><br></pre></td></tr></table></figure>
+
+<p>观察这个函数的第一个选择语句：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (disk-&gt;major) &#123;</span><br><span class="line">	<span class="keyword">if</span> (WARN_ON(!disk-&gt;minors))</span><br><span class="line">		<span class="keyword">return</span> -EINVAL;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (disk-&gt;minors &gt; DISK_MAX_PARTS) &#123;</span><br><span class="line">		pr_err(<span class="string">&quot;block: can&#x27;t allocate more than %d partitions\n&quot;</span>,</span><br><span class="line">			DISK_MAX_PARTS);</span><br><span class="line">		disk-&gt;minors = DISK_MAX_PARTS;</span><br><span class="line">	&#125;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> (WARN_ON(disk-&gt;minors))</span><br><span class="line">		<span class="keyword">return</span> -EINVAL;</span><br><span class="line"></span><br><span class="line">	ret = blk_alloc_ext_minor();</span><br><span class="line">	<span class="keyword">if</span> (ret &lt; <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> ret;</span><br><span class="line">	disk-&gt;major = BLOCK_EXT_MAJOR;</span><br><span class="line">	disk-&gt;first_minor = ret;</span><br><span class="line">	disk-&gt;flags |= GENHD_FL_EXT_DEVT;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以发现对于gendisk变量的初始化，major, minors和first_minor是必须被初始化的，否则会返回异常值，这恰好与我们在**二、3、**中所说的一样。</p>
+<p>其他的函数使用在网上都有相应教程，第四点只是做出了基本的补充。</p>
+<h1 id="五、实验代码和实验效果"><a href="#五、实验代码和实验效果" class="headerlink" title="五、实验代码和实验效果"></a><strong>五、实验代码和实验效果</strong></h1><h2 id="1、实验代码。"><a href="#1、实验代码。" class="headerlink" title="1、实验代码。"></a>1、实验代码。</h2><p>实验中有两个文件，一个是hello_bdev_01.c，另一个是Makefile</p>
+<h3 id="hello-bdev-01-c"><a href="#hello-bdev-01-c" class="headerlink" title="hello_bdev_01.c"></a>hello_bdev_01.c</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/init.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/module.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/kernel.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/fs.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/genhd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/blkdev.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/bio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DEV_NAME <span class="string">&quot;bdev_01&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DEV_NAME_LEN 7</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DISK_SIZE 3 * 1024 * 1024</span></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> register_major = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">block_device</span> *<span class="title">bdev</span>;</span></span><br><span class="line"><span class="type">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">gendisk</span> *<span class="title">gd</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">block_device_operations</span> <span class="title">bdev_ops</span> =</span> &#123;</span><br><span class="line">    .owner = THIS_MODULE,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> __init <span class="title function_">bdev_module_init</span><span class="params">(<span class="type">void</span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> err;</span><br><span class="line"></span><br><span class="line">    bdev = kzalloc(<span class="keyword">sizeof</span>(*bdev), GFP_KERNEL);</span><br><span class="line">    <span class="keyword">if</span>(!bdev)&#123;</span><br><span class="line">        printk(KERN_ERR <span class="string">&quot;bdev_01: failed to allocate memory for block device\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> -ENOMEM;</span><br><span class="line">    &#125;</span><br><span class="line">    printk(KERN_INFO <span class="string">&quot;bdev_01: allocated memory for block device\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    register_major = register_blkdev(<span class="number">0</span>, DEV_NAME);</span><br><span class="line">    <span class="keyword">if</span>(register_major &lt; <span class="number">0</span>)&#123;</span><br><span class="line">        printk(KERN_ERR <span class="string">&quot;bdev_01: failed to register block device\n&quot;</span>);</span><br><span class="line">        kfree(bdev);</span><br><span class="line">        <span class="keyword">return</span> register_major;</span><br><span class="line">    &#125;</span><br><span class="line">    printk(KERN_INFO <span class="string">&quot;bdev_01: registered block device with major number %d\n&quot;</span>, register_major);</span><br><span class="line"></span><br><span class="line">    gd = blk_alloc_disk(NUMA_NO_NODE);</span><br><span class="line">    <span class="keyword">if</span>(!gd)&#123;</span><br><span class="line">        printk(KERN_ERR <span class="string">&quot;bdev_01: failed to allocate memory for gendisk\n&quot;</span>);</span><br><span class="line">        put_disk(gd);</span><br><span class="line">        <span class="keyword">return</span> -ENOMEM;</span><br><span class="line">    &#125;</span><br><span class="line">    printk(KERN_INFO <span class="string">&quot;bdev_01: allocated memory for gendisk\n&quot;</span>);</span><br><span class="line">    gd-&gt;major = register_major;</span><br><span class="line">    gd-&gt;first_minor = <span class="number">0</span>;</span><br><span class="line">    gd-&gt;minors = <span class="number">1</span>;</span><br><span class="line">    gd-&gt;fops = &amp;bdev_ops;</span><br><span class="line">    gd-&gt;private_data = bdev;</span><br><span class="line">    set_capacity(gd, DISK_SIZE);</span><br><span class="line"></span><br><span class="line">    err = add_disk(gd);</span><br><span class="line">    printk(KERN_INFO <span class="string">&quot;bdev_01: trying to add disk with err %d\n&quot;</span>, err);</span><br><span class="line">    <span class="comment">// if(err)&#123;</span></span><br><span class="line">    <span class="comment">//     printk(KERN_ERR &quot;bdev_01: failed to add disk\n&quot;);</span></span><br><span class="line">    <span class="comment">//     kfree(bdev);</span></span><br><span class="line">    <span class="comment">//     return err;</span></span><br><span class="line">    <span class="comment">// &#125;</span></span><br><span class="line"></span><br><span class="line">    printk(KERN_INFO <span class="string">&quot;bdev_01 loaded!\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> __exit <span class="title function_">bdev_module_exit</span><span class="params">(<span class="type">void</span>)</span>&#123;</span><br><span class="line">    unregister_blkdev(register_major, DEV_NAME);</span><br><span class="line">    printk(KERN_INFO <span class="string">&quot;bdev_01: unregistered block device\n&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span>(gd)&#123;</span><br><span class="line">        del_gendisk(gd);</span><br><span class="line">        printk(KERN_INFO <span class="string">&quot;bdev_01: deleted gendisk\n&quot;</span>);</span><br><span class="line">        put_disk(gd);</span><br><span class="line">        printk(KERN_INFO <span class="string">&quot;bdev_01: put disk\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    kfree(bdev);</span><br><span class="line">    printk(KERN_INFO <span class="string">&quot;bdev_01 unloaded!\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">module_init(bdev_module_init);</span><br><span class="line">module_exit(bdev_module_exit);</span><br><span class="line">MODULE_LICENSE(<span class="string">&quot;GPL&quot;</span>);</span><br><span class="line">MODULE_AUTHOR(<span class="string">&quot;hello world&quot;</span>);</span><br><span class="line">MODULE_DESCRIPTION(<span class="string">&quot;This is a simple block device driver&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="Makefile"><a href="#Makefile" class="headerlink" title="Makefile"></a>Makefile</h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">obj-m += hello_bdev_01.o</span><br><span class="line"></span><br><span class="line"><span class="section">all:</span></span><br><span class="line">	make -C /lib/modules/<span class="variable">$(<span class="built_in">shell</span> uname -r)</span>/build M=<span class="variable">$(PWD)</span> modules</span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	make -C /lib/modules/<span class="variable">$(<span class="built_in">shell</span> uname -r)</span>/build M=<span class="variable">$(PWD)</span> clean</span><br></pre></td></tr></table></figure>
+
+<h2 id="2、实验效果"><a href="#2、实验效果" class="headerlink" title="2、实验效果"></a>2、实验效果</h2><h3 id="编译运行"><a href="#编译运行" class="headerlink" title="编译运行"></a>编译运行</h3><p>首先进行编译：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make</span><br></pre></td></tr></table></figure>
+
+<p>输出是这样的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">make -C /lib/modules/5.15.0-134-generic/build M=/home/yfnie/workspace/kernel_pgm/hello_bdev_01 modules</span><br><span class="line">make[1]: Entering directory &#x27;/usr/src/linux-headers-5.15.0-134-generic&#x27;</span><br><span class="line">  CC [M]  /home/yfnie/workspace/kernel_pgm/hello_bdev_01/hello_bdev_01.o</span><br><span class="line">  MODPOST /home/yfnie/workspace/kernel_pgm/hello_bdev_01/Module.symvers</span><br><span class="line">  CC [M]  /home/yfnie/workspace/kernel_pgm/hello_bdev_01/hello_bdev_01.mod.o</span><br><span class="line">  LD [M]  /home/yfnie/workspace/kernel_pgm/hello_bdev_01/hello_bdev_01.ko</span><br><span class="line">  BTF [M] /home/yfnie/workspace/kernel_pgm/hello_bdev_01/hello_bdev_01.ko</span><br><span class="line">Skipping BTF generation for /home/yfnie/workspace/kernel_pgm/hello_bdev_01/hello_bdev_01.ko due to unavailability of vmlinux</span><br><span class="line">make[1]: Leaving directory &#x27;/usr/src/linux-headers-5.15.0-134-generic&#x27;</span><br></pre></td></tr></table></figure>
+
+<p> 目录部分可能不一样，这个看你的设备。</p>
+<p>编译后的目录里会有很多文件，其中有一个叫 hello_bdev_01,ko，这就是我们后续要加载的模块。</p>
+<p>在加载模块前另外开启一个终端打开日志监听：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dmesg -W</span><br></pre></td></tr></table></figure>
+
+<p>接着加载模块：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo insmod hello_bdev_01.ko</span><br></pre></td></tr></table></figure>
+
+<h3 id="运行效果"><a href="#运行效果" class="headerlink" title="运行效果"></a>运行效果</h3><h4 id="系统日志"><a href="#系统日志" class="headerlink" title="系统日志"></a>系统日志</h4><p>系统日志会输出以下信息：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[  127.107509] bdev_01: allocated memory for block device</span><br><span class="line">[  127.107512] bdev_01: registered block device with major number 252</span><br><span class="line">[  127.107578] bdev_01: allocated memory for gendisk</span><br><span class="line">[  127.107581] ------------[ cut here ]------------</span><br><span class="line">[            ] 中间是无用信息</span><br><span class="line">[  127.107765] ---[ end trace a27033d7d60f085e ]---</span><br><span class="line">[  127.107772] bdev_01: trying to add disk with err 1</span><br><span class="line">[  127.107773] bdev_01 loaded!</span><br></pre></td></tr></table></figure>
+
+<h4 id="lsmod"><a href="#lsmod" class="headerlink" title="lsmod"></a>lsmod</h4><p>在终端里使用 lsmod 命令可以看到第一行出现了我们的模块：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Module                  Size  Used by</span><br><span class="line">hello_bdev_01          16384  0</span><br><span class="line">intel_rapl_msr         20480  0</span><br><span class="line">intel_rapl_common      40960  1 intel_rapl_msr</span><br><span class="line">skx_edac_common        20480  0</span><br><span class="line">nfit                   81920  1 skx_edac_common</span><br><span class="line">binfmt_misc            24576  1</span><br><span class="line">ppdev                  24576  0</span><br><span class="line">kvm_intel             372736  0</span><br><span class="line">joydev                 32768  0</span><br><span class="line">input_leds             16384  0</span><br><span class="line">mac_hid                16384  0</span><br><span class="line">kvm                  1040384  1 kvm_intel</span><br><span class="line">parport_pc             49152  0</span><br><span class="line">qemu_fw_cfg            20480  0</span><br><span class="line">parport                69632  2 parport_pc,ppdev</span><br><span class="line">serio_raw              20480  0</span><br><span class="line">........</span><br></pre></td></tr></table></figure>
+
+<h4 id="直接查看-proc下的设备"><a href="#直接查看-proc下的设备" class="headerlink" title="直接查看&#x2F;proc下的设备"></a>直接查看&#x2F;proc下的设备</h4><p>我们创建的块设备被分配了一个主设备号，我们来查看这个设备是否被注册且创建，使用命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/devices</span><br></pre></td></tr></table></figure>
+
+<p> 可以看到：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">........</span><br><span class="line">Block devices:</span><br><span class="line">  2 fd</span><br><span class="line">  7 loop</span><br><span class="line">  8 sd</span><br><span class="line">  9 md</span><br><span class="line"> 11 sr</span><br><span class="line"> 65 sd</span><br><span class="line"> 66 sd</span><br><span class="line"> 67 sd</span><br><span class="line"> 68 sd</span><br><span class="line"> 69 sd</span><br><span class="line"> 70 sd</span><br><span class="line"> 71 sd</span><br><span class="line">128 sd</span><br><span class="line">129 sd</span><br><span class="line">130 sd</span><br><span class="line">131 sd</span><br><span class="line">132 sd</span><br><span class="line">133 sd</span><br><span class="line">134 sd</span><br><span class="line">135 sd</span><br><span class="line">252 bdev_01</span><br><span class="line">253 device-mapper</span><br><span class="line">254 mdp</span><br><span class="line">259 blkext</span><br></pre></td></tr></table></figure>
+
+<p>252就是我们的设备，可以看到成功地被创建了。 </p>
+<h4 id="移除模块"><a href="#移除模块" class="headerlink" title="移除模块"></a>移除模块</h4><p>使用命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rmmod hello_bdev_01</span><br></pre></td></tr></table></figure>
+
+<p> 移除模块，再运行以上的命令，发现设备bdev_01与模块hello_bdev_01都消失了。多次运行也不会出现内存越界导致内核崩溃的情况。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag"><i class="fa fa-tag"></i> C语言</a>
+          
+            <a href="/tags/Linux/" rel="tag"><i class="fa fa-tag"></i> Linux</a>
+          
+            <a href="/tags/%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%91/" rel="tag"><i class="fa fa-tag"></i> 内核开发</a>
+          
+            <a href="/tags/kernel/" rel="tag"><i class="fa fa-tag"></i> kernel</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2025/07/03/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%9101-%E5%9F%BA%E6%9C%AC%E8%BF%87%E7%A8%8B/" rel="next" title="Linux内核开发01-基本过程">
+                <i class="fa fa-chevron-left"></i> Linux内核开发01-基本过程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/yanfeng-nie" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">一、环境准备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%89%80%E9%9C%80%E7%BB%93%E6%9E%84%E4%BD%93"><span class="nav-number">2.</span> <span class="nav-text">二、所需结构体</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86"><span class="nav-number">2.1.</span> <span class="nav-text">1、基本知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81block-device"><span class="nav-number">2.2.</span> <span class="nav-text">2、block_device</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81gendisk"><span class="nav-number">2.3.</span> <span class="nav-text">3、gendisk</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E9%80%BB%E8%BE%91%E6%B5%81%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">三、逻辑流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81API%E5%88%86%E6%9E%90"><span class="nav-number">4.</span> <span class="nav-text">四、API分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81blk-alloc-disk-node-id"><span class="nav-number">4.1.</span> <span class="nav-text">1、blk_alloc_disk(node_id)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81add-disk-struct-gendisk"><span class="nav-number">4.2.</span> <span class="nav-text">2、add_disk(struct gendisk*)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E5%AE%9E%E9%AA%8C%E4%BB%A3%E7%A0%81%E5%92%8C%E5%AE%9E%E9%AA%8C%E6%95%88%E6%9E%9C"><span class="nav-number">5.</span> <span class="nav-text">五、实验代码和实验效果</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E5%AE%9E%E9%AA%8C%E4%BB%A3%E7%A0%81%E3%80%82"><span class="nav-number">5.1.</span> <span class="nav-text">1、实验代码。</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hello-bdev-01-c"><span class="nav-number">5.1.1.</span> <span class="nav-text">hello_bdev_01.c</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Makefile"><span class="nav-number">5.1.2.</span> <span class="nav-text">Makefile</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81%E5%AE%9E%E9%AA%8C%E6%95%88%E6%9E%9C"><span class="nav-number">5.2.</span> <span class="nav-text">2、实验效果</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E8%BF%90%E8%A1%8C"><span class="nav-number">5.2.1.</span> <span class="nav-text">编译运行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E6%95%88%E6%9E%9C"><span class="nav-number">5.2.2.</span> <span class="nav-text">运行效果</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%97%A5%E5%BF%97"><span class="nav-number">5.2.2.1.</span> <span class="nav-text">系统日志</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#lsmod"><span class="nav-number">5.2.2.2.</span> <span class="nav-text">lsmod</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9B%B4%E6%8E%A5%E6%9F%A5%E7%9C%8B-proc%E4%B8%8B%E7%9A%84%E8%AE%BE%E5%A4%87"><span class="nav-number">5.2.2.3.</span> <span class="nav-text">直接查看&#x2F;proc下的设备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A7%BB%E9%99%A4%E6%A8%A1%E5%9D%97"><span class="nav-number">5.2.2.4.</span> <span class="nav-text">移除模块</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yanfeng Nie</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
