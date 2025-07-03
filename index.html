@@ -259,6 +259,602 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://yanfeng-nie.github.io/2025/07/03/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%9105-%E5%9D%97%E8%AE%BE%E5%A4%87%E5%9F%BA%E6%9C%AC%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%88%9B%E5%BB%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yanfeng Nie">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2025/07/03/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%9105-%E5%9D%97%E8%AE%BE%E5%A4%87%E5%9F%BA%E6%9C%AC%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%88%9B%E5%BB%BA/" itemprop="url">Linux内核开发05-块设备基本注册与创建</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2025-07-03T22:41:13+08:00">
+                2025-07-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux内核开发教程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          一、环境准备Linux Ubuntu v5.15+ （不推荐v6.0+因为很多库函数被改动，可能本教程里的源代码可以稳定运行，但换个内核就会碰到各种各样的问题）
+你喜欢的IDE
+二、所需结构体1、基本知识在Linux系统中，操作硬盘等存储设备的抽象通常被称作块设备(block device)，块设备本体（忽略对块设备进行操作的那一堆东西）就两个：
+12struct block_device;struct gendisk;
+如果形象地说，那就是：在块设备抽象的层面上，gendisk在block_device下方，换句话说就是更底层，block_device无法直接调用IO接口操作硬盘，但gend
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2025/07/03/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%9105-%E5%9D%97%E8%AE%BE%E5%A4%87%E5%9F%BA%E6%9C%AC%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%88%9B%E5%BB%BA/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://yanfeng-nie.github.io/2025/07/03/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%9104-%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E6%B3%A8%E5%86%8C%E5%90%8E%E7%9A%84-dev-%E4%B8%8B%E8%87%AA%E5%8A%A8%E5%88%9B%E5%BB%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yanfeng Nie">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2025/07/03/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%9104-%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E6%B3%A8%E5%86%8C%E5%90%8E%E7%9A%84-dev-%E4%B8%8B%E8%87%AA%E5%8A%A8%E5%88%9B%E5%BB%BA/" itemprop="url">Linux内核开发04-字符设备注册后的/dev/下自动创建</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2025-07-03T22:38:14+08:00">
+                2025-07-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux内核开发教程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          敬请期待
+          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2025/07/03/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%9104-%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E6%B3%A8%E5%86%8C%E5%90%8E%E7%9A%84-dev-%E4%B8%8B%E8%87%AA%E5%8A%A8%E5%88%9B%E5%BB%BA/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://yanfeng-nie.github.io/2025/07/03/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%9103-%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E7%9A%84%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C%E9%9B%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yanfeng Nie">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2025/07/03/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%9103-%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E7%9A%84%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C%E9%9B%86/" itemprop="url">Linux内核开发03-字符设备的文件操作集</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2025-07-03T22:37:52+08:00">
+                2025-07-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux内核开发教程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          敬请期待
+          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2025/07/03/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%9103-%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E7%9A%84%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C%E9%9B%86/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://yanfeng-nie.github.io/2025/07/03/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%9102-%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E6%B3%A8%E5%86%8C%E4%B8%8E%E6%89%8B%E5%8A%A8%E5%88%9B%E5%BB%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yanfeng Nie">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2025/07/03/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%9102-%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E6%B3%A8%E5%86%8C%E4%B8%8E%E6%89%8B%E5%8A%A8%E5%88%9B%E5%BB%BA/" itemprop="url">Linux内核开发02-字符设备注册与手动创建</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2025-07-03T22:37:36+08:00">
+                2025-07-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux内核开发教程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          敬请期待
+          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2025/07/03/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%9102-%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E6%B3%A8%E5%86%8C%E4%B8%8E%E6%89%8B%E5%8A%A8%E5%88%9B%E5%BB%BA/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://yanfeng-nie.github.io/2025/07/03/%E5%87%B8%E9%9B%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -352,167 +948,13 @@
       
         
           
-          一、仿射集合和凸集直线与线段穿越点 $x_1$ 与 $x_2$ 的直线定义为 $y=\theta x_1+(1-\theta)x_2,\theta\in\mathbb{R}$，参数 $\theta$ 若在 $0$ 与 $1$ 间变动则构成了 $x_1$ 与 $x_2$ 间的闭合线段
-仿射集合如果一个集合（设为 $C\subseteq\mathbb{R}^n$）中任意两个不同点的直线仍在集合 $C$ 中，则称 $C\subseteq\mathbb{R}^n$ 是仿射的
-如果上述概念中的两个不同点拓展到 $n$ 个不同点，那根据仿射集合定义可以得到以下结论：若 $C$ 是仿射的
-
-x_1,x_2,
+          一、仿射集合和凸集1.1、直线与线段穿越点 $x_1$ 与 $x_2$ 的直线定义为 $y=\theta x_1+(1-\theta)x_2,\theta\in\mathbb{R}$，参数 $\theta$ 若在 $0$ 与 $1$ 间变动则构成了 $x_1$ 与 $x_2$ 间的闭合线段
+1.2、仿射集合1.2.1、仿射集合与子空间如果一个集合（设为 $C\subseteq\mathbb{R}^n$）中任意两个不同点的直线仍在集合 $C$ 中，则称 $C\subseteq\mathbb{R}^n$ 是仿射的
+如果上述概念中的两个不同点拓展到 $n$ 个不同点，那根据仿射集合定义可以得到以下结
           ...
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2025/07/03/%E5%87%B8%E9%9B%86/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://yanfeng-nie.github.io/2025/07/03/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%9105-%E5%9D%97%E8%AE%BE%E5%A4%87%E5%9F%BA%E6%9C%AC%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%88%9B%E5%BB%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yanfeng Nie">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2025/07/03/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%9105-%E5%9D%97%E8%AE%BE%E5%A4%87%E5%9F%BA%E6%9C%AC%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%88%9B%E5%BB%BA/" itemprop="url">Linux内核开发05-块设备基本注册与创建</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2025-07-03T15:05:13+08:00">
-                2025-07-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux内核开发教程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          一、环境准备Linux Ubuntu v5.15+ （不推荐v6.0+因为很多库函数被改动，可能本教程里的源代码可以稳定运行，但换个内核就会碰到各种各样的问题）
-你喜欢的IDE
-二、所需结构体1、基本知识在Linux系统中，操作硬盘等存储设备的抽象通常被称作块设备(block device)，块设备本体（忽略对块设备进行操作的那一堆东西）就两个：
-12struct block_device;struct gendisk;
-如果形象地说，那就是：在块设备抽象的层面上，gendisk在block_device下方，换句话说就是更底层，block_device无法直接调用IO接口操作硬盘，但gend
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2025/07/03/Linux%E5%86%85%E6%A0%B8%E5%BC%80%E5%8F%9105-%E5%9D%97%E8%AE%BE%E5%A4%87%E5%9F%BA%E6%9C%AC%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%88%9B%E5%BB%BA/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
@@ -904,7 +1346,7 @@ x_1,x_2,
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
