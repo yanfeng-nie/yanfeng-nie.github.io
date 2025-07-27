@@ -352,14 +352,13 @@
       
         
           
-          [toc]
-一、堆排序1、堆（1）简述堆（heap）默认使用二叉堆，可以被视作一颗近似的二叉树。因而可以定义出其父结点、左孩子和右孩子的下标，此处不赘述。
+          一、堆排序1、堆（1）简述堆（heap）默认使用二叉堆，可以被视作一颗近似的二叉树。因而可以定义出其父结点、左孩子和右孩子的下标，此处不赘述。
 123#define PARENT(i) i &gt;&gt; 1#define LEFT(i) i &lt;&lt; 1#define RIGHT(i) i &lt;&lt; 1 | 1
 （2）最大堆性质最大堆性质是指堆中除了根结点以外的所有结点都必须满足：
 
 A[\text{ PARENT(}i\text{) }]\ge A[i]\\对于最小堆性质，只需要将不等号反过来就可以了。
 最小堆常用于构建优先队列。
-2、堆的维护 max_hea
+2、堆的维护 max_heapify（1
           ...
           <!--noindex-->
           <div class="post-button text-center">
