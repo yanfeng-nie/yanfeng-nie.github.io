@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="数学,计算机数学,算法分析,排序," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、堆排序1、堆堆（heap）默认使用二叉堆，可以被视作一颗近似的二叉树 2、堆的维护 max_heapify（1）基本思想（2）递归版本1234567891011121314151617181920void max_heapify(int a[], int i, int heap_size)&#123;	if(i &lt;&#x3D; 0 || i &gt;&#x3D; heap_size)		return;	in">
+<meta property="og:type" content="article">
+<meta property="og:title" content="排序">
+<meta property="og:url" content="https://yanfeng-nie.github.io/2025/07/27/%E6%8E%92%E5%BA%8F/index.html">
+<meta property="og:site_name" content="Yanfeng Nie">
+<meta property="og:description" content="一、堆排序1、堆堆（heap）默认使用二叉堆，可以被视作一颗近似的二叉树 2、堆的维护 max_heapify（1）基本思想（2）递归版本1234567891011121314151617181920void max_heapify(int a[], int i, int heap_size)&#123;	if(i &lt;&#x3D; 0 || i &gt;&#x3D; heap_size)		return;	in">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-07-27T11:33:03.000Z">
+<meta property="article:modified_time" content="2025-07-27T13:36:13.234Z">
+<meta property="article:author" content="Yanfeng Nie">
+<meta property="article:tag" content="数学">
+<meta property="article:tag" content="计算机数学">
+<meta property="article:tag" content="算法分析">
+<meta property="article:tag" content="排序">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://yanfeng-nie.github.io/2025/07/27/排序/"/>
+
+
+
+
+
+  <title>排序 | Yanfeng Nie</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yanfeng Nie</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">A Personal Blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://yanfeng-nie.github.io/2025/07/27/%E6%8E%92%E5%BA%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yanfeng Nie">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">排序</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2025-07-27T19:33:03+08:00">
+                2025-07-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index">
+                    <span itemprop="name">算法与数据结构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、堆排序"><a href="#一、堆排序" class="headerlink" title="一、堆排序"></a>一、堆排序</h1><h2 id="1、堆"><a href="#1、堆" class="headerlink" title="1、堆"></a>1、堆</h2><p>堆（heap）默认使用<strong>二叉堆</strong>，可以被视作一颗近似的二叉树</p>
+<h2 id="2、堆的维护-max-heapify"><a href="#2、堆的维护-max-heapify" class="headerlink" title="2、堆的维护 max_heapify"></a>2、堆的维护 max_heapify</h2><h3 id="（1）基本思想"><a href="#（1）基本思想" class="headerlink" title="（1）基本思想"></a>（1）基本思想</h3><h3 id="（2）递归版本"><a href="#（2）递归版本" class="headerlink" title="（2）递归版本"></a>（2）递归版本</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">max_heapify</span><span class="params">(<span class="type">int</span> a[], <span class="type">int</span> i, <span class="type">int</span> heap_size)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(i &lt;= <span class="number">0</span> || i &gt;= heap_size)</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">	<span class="type">int</span> l = <span class="built_in">LEFT</span>(i);</span><br><span class="line">	<span class="type">int</span> r = <span class="built_in">RIGHT</span>(i);</span><br><span class="line">	<span class="type">int</span> largest;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(l &lt;= heap_size &amp;&amp; a[l] &gt; a[i])</span><br><span class="line">		largest = l;</span><br><span class="line">	<span class="keyword">else</span> </span><br><span class="line">		largest = i;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(r &lt;= heap_size &amp;&amp; a[r] &gt; a[largest])</span><br><span class="line">		largest = r;</span><br><span class="line">	<span class="keyword">if</span>(largest != i)&#123;</span><br><span class="line">		<span class="built_in">swap</span>(a[i], a[largest]);</span><br><span class="line">		<span class="built_in">max_heapify</span>(a, largest, heap_size);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="（3）循环版本"><a href="#（3）循环版本" class="headerlink" title="（3）循环版本"></a>（3）循环版本</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">max_heapify_loop</span><span class="params">(<span class="type">int</span> a[], <span class="type">int</span> i, <span class="type">int</span> heap_size)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(i &lt;= <span class="number">0</span> || i &gt;= heap_size)</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	<span class="keyword">while</span>(i &lt; heap_size)&#123;</span><br><span class="line">		<span class="type">int</span> l = <span class="built_in">LEFT</span>(i);</span><br><span class="line">		<span class="type">int</span> r = <span class="built_in">RIGHT</span>(i);</span><br><span class="line">		<span class="type">int</span> largest;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span>(l &lt;= heap_size &amp;&amp; a[l] &gt; a[i])</span><br><span class="line">			largest = l;</span><br><span class="line">		<span class="keyword">else</span> </span><br><span class="line">			largest = i;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span>(r &lt;= heap_size &amp;&amp; a[r] &gt; a[largest])</span><br><span class="line">			largest = r;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span>(largest != i)&#123;</span><br><span class="line">			<span class="built_in">swap</span>(a[i], a[largest]);</span><br><span class="line">			i = largest;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> </span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="（4）复杂度"><a href="#（4）复杂度" class="headerlink" title="（4）复杂度"></a>（4）复杂度</h3><h2 id="3、建堆-build-max-heap"><a href="#3、建堆-build-max-heap" class="headerlink" title="3、建堆 build_max_heap"></a>3、建堆 build_max_heap</h2><h3 id="（1）基本思想-1"><a href="#（1）基本思想-1" class="headerlink" title="（1）基本思想"></a>（1）基本思想</h3><h3 id="（2）代码"><a href="#（2）代码" class="headerlink" title="（2）代码"></a>（2）代码</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">build_max_heap</span><span class="params">(<span class="type">int</span> *a, <span class="type">int</span> heap_size)</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i = (heap_size &gt;&gt; <span class="number">1</span>); i &gt;= <span class="number">1</span>; i--)</span><br><span class="line">		<span class="built_in">max_heapify_loop</span>(a, i, heap_size);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="（3）复杂度"><a href="#（3）复杂度" class="headerlink" title="（3）复杂度"></a>（3）复杂度</h3><h2 id="4、堆排序-heap-sort"><a href="#4、堆排序-heap-sort" class="headerlink" title="4、堆排序 heap_sort"></a>4、堆排序 heap_sort</h2><h3 id="（1）基本思想-2"><a href="#（1）基本思想-2" class="headerlink" title="（1）基本思想"></a>（1）基本思想</h3><h3 id="（2）代码-1"><a href="#（2）代码-1" class="headerlink" title="（2）代码"></a>（2）代码</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">double</span> <span class="title">heap_sort</span><span class="params">(<span class="type">int</span> a[], <span class="type">int</span> num, <span class="type">int</span> heap_size)</span></span>&#123;</span><br><span class="line">	...</span><br><span class="line">	<span class="built_in">build_max_heap</span>(a, heap_size);</span><br><span class="line">	<span class="comment">//heap sort</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i = num; i &gt;= <span class="number">2</span>; i--)&#123;</span><br><span class="line">		<span class="built_in">swap</span>(a[<span class="number">1</span>], a[i]);</span><br><span class="line">		heap_size--;</span><br><span class="line">		<span class="built_in">max_heapify_loop</span>(a, <span class="number">1</span>, heap_size);</span><br><span class="line">	&#125;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="5、完整代码（对拍版）"><a href="#5、完整代码（对拍版）" class="headerlink" title="5、完整代码（对拍版）"></a>5、完整代码（对拍版）</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br></pre></td><td class="code"><pre><span class="line">/***********************************************************</span><br><span class="line">  &gt; File Name: heap_sort.cpp</span><br><span class="line">  &gt; Author: Nie Yanfeng</span><br><span class="line">  &gt; Mail: e83242650@163.com</span><br><span class="line">  &gt; Created Time: Sun 27 Jul 2025 03:45:45 PM CST</span><br><span class="line">  &gt; Last Modified: Sun 27 Jul 2025 05:15:38 PM CST</span><br><span class="line">***********************************************************/</span><br><span class="line"></span><br><span class="line">#include&lt;cstdio&gt;</span><br><span class="line">#include&lt;iostream&gt;</span><br><span class="line">#include&lt;string&gt;</span><br><span class="line">#include&lt;cstdlib&gt;</span><br><span class="line">#include&lt;algorithm&gt;</span><br><span class="line"></span><br><span class="line">#include&lt;time.h&gt;</span><br><span class="line"></span><br><span class="line">#define PARENT(i) i &gt;&gt; 1</span><br><span class="line">#define LEFT(i) i &lt;&lt; 1</span><br><span class="line">#define RIGHT(i) i &lt;&lt; 1 | 1</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int input[65537];</span><br><span class="line">int output_1[65537];</span><br><span class="line">const int MOD = 65536;</span><br><span class="line"></span><br><span class="line">void swap(int &amp;a, int &amp;b)&#123;</span><br><span class="line">	int temp = a;</span><br><span class="line">	a = b;</span><br><span class="line">	b = temp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void max_heapify(int a[], int i, int heap_size)&#123;</span><br><span class="line">	if(i &lt;= 0 || i &gt;= heap_size)</span><br><span class="line">		return;</span><br><span class="line"></span><br><span class="line">	int l = LEFT(i);</span><br><span class="line">	int r = RIGHT(i);</span><br><span class="line">	int largest;</span><br><span class="line"></span><br><span class="line">	if(l &lt;= heap_size &amp;&amp; a[l] &gt; a[i])</span><br><span class="line">		largest = l;</span><br><span class="line">	else </span><br><span class="line">		largest = i;</span><br><span class="line"></span><br><span class="line">	if(r &lt;= heap_size &amp;&amp; a[r] &gt; a[largest])</span><br><span class="line">		largest = r;</span><br><span class="line">	if(largest != i)&#123;</span><br><span class="line">		swap(a[i], a[largest]);</span><br><span class="line">		max_heapify(a, largest, heap_size);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void max_heapify_loop(int a[], int i, int heap_size)&#123;</span><br><span class="line">	if(i &lt;= 0 || i &gt;= heap_size)</span><br><span class="line">		return;</span><br><span class="line">	while(i &lt; heap_size)&#123;</span><br><span class="line">		int l = LEFT(i);</span><br><span class="line">		int r = RIGHT(i);</span><br><span class="line">		int largest;</span><br><span class="line"></span><br><span class="line">		if(l &lt;= heap_size &amp;&amp; a[l] &gt; a[i])</span><br><span class="line">			largest = l;</span><br><span class="line">		else </span><br><span class="line">			largest = i;</span><br><span class="line"></span><br><span class="line">		if(r &lt;= heap_size &amp;&amp; a[r] &gt; a[largest])</span><br><span class="line">			largest = r;</span><br><span class="line"></span><br><span class="line">		if(largest != i)&#123;</span><br><span class="line">			swap(a[i], a[largest]);</span><br><span class="line">			i = largest;</span><br><span class="line">		&#125;</span><br><span class="line">		else </span><br><span class="line">			break;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void build_max_heap(int *a, int heap_size)&#123;</span><br><span class="line">	for(int i = (heap_size &gt;&gt; 1); i &gt;= 1; i--)</span><br><span class="line">		max_heapify_loop(a, i, heap_size);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line">---------------------------------------------------------</span><br><span class="line">SORT OUT THE ARRAY AND COMPARE</span><br><span class="line">---------------------------------------------------------</span><br><span class="line">*/</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line">Quick Sort to evaluate the heap-sort</span><br><span class="line">*/</span><br><span class="line">double quick_sort(int A[], int n)&#123;</span><br><span class="line">	clock_t start, finish;</span><br><span class="line">	start = clock();</span><br><span class="line">	sort(A + 1, A + 1 + n);</span><br><span class="line">	finish = clock();</span><br><span class="line"></span><br><span class="line">	double running_time = (double)(finish - start) / CLOCKS_PER_SEC * (double)1000;</span><br><span class="line"></span><br><span class="line">	cout&lt;&lt;&quot;The array used to be compared is quick-sorted out with sorting time: &quot;&lt;&lt;endl;</span><br><span class="line">	cout&lt;&lt;&quot;    CLOCKS_PER_MILISEC: &quot;&lt;&lt;running_time&lt;&lt;&quot;(ms)&quot;&lt;&lt;endl;</span><br><span class="line">	return running_time;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">double heap_sort(int a[], int num, int heap_size)&#123;</span><br><span class="line">	if(num == 0) return -1;</span><br><span class="line">	</span><br><span class="line">	clock_t start, finish;</span><br><span class="line">	start = clock();</span><br><span class="line"></span><br><span class="line">	build_max_heap(a, heap_size);</span><br><span class="line"></span><br><span class="line">	//heap sort</span><br><span class="line">	for(int i = num; i &gt;= 2; i--)&#123;</span><br><span class="line">		swap(a[1], a[i]);</span><br><span class="line">		heap_size--;</span><br><span class="line">		max_heapify_loop(a, 1, heap_size);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	finish = clock();</span><br><span class="line">	double running_time = (double)(finish - start) / CLOCKS_PER_SEC * (double)1000;</span><br><span class="line">	cout&lt;&lt;&quot;The array is heap-sorted out with sorting time: &quot;&lt;&lt;endl;</span><br><span class="line">	cout&lt;&lt;&quot;    CLOCKS_PER_MILISEC: &quot;&lt;&lt;running_time&lt;&lt;&quot;(ms)&quot;&lt;&lt;endl;</span><br><span class="line">	return running_time;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">double compare_results(int a[], int b[], int num)&#123;</span><br><span class="line">	int count = 0;</span><br><span class="line">	for(int i = 1; i &lt;= num; i++)</span><br><span class="line">		if(a[i] == b[i])</span><br><span class="line">			count++;</span><br><span class="line">	return (double)count / (double)num;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main(int argc, char* argv[])&#123;</span><br><span class="line">	//generate the length of input array</span><br><span class="line">	srand((unsigned)time(NULL));</span><br><span class="line"></span><br><span class="line">	int num = rand() % MOD;</span><br><span class="line">	while(num &lt; 10)</span><br><span class="line">		num = rand() % MOD;//control the length of the generated data</span><br><span class="line">	cout&lt;&lt;&quot;The length of generated random array: &quot;&lt;&lt;num&lt;&lt;endl;</span><br><span class="line"></span><br><span class="line">	//initiate</span><br><span class="line">	for(int i = 1; i &lt;= num; i++)</span><br><span class="line">		input[i] = output_1[i] = rand() % MOD;</span><br><span class="line">	</span><br><span class="line">	//Quick Sort</span><br><span class="line">	double time_1 = quick_sort(output_1, num);</span><br><span class="line"></span><br><span class="line">	//Heap sort</span><br><span class="line">	double time_2 = heap_sort(input, num, num);</span><br><span class="line"></span><br><span class="line">	//Calculate the correction ratio</span><br><span class="line">	cout&lt;&lt;&quot;Correct ratio with Quick Sort: &quot;&lt;&lt;compare_results(input, output_1, num)&lt;&lt;endl;</span><br><span class="line">	cout&lt;&lt;&quot;Heap Sort is &quot;&lt;&lt;(time_2 - time_1) / time_1 * (double)100&lt;&lt;&quot;% Slower than Quick Sort&quot;&lt;&lt;endl;</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="二、快速排序"><a href="#二、快速排序" class="headerlink" title="二、快速排序"></a>二、快速排序</h1><h1 id="三、线性时间排序"><a href="#三、线性时间排序" class="headerlink" title="三、线性时间排序"></a>三、线性时间排序</h1>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%95%B0%E5%AD%A6/" rel="tag"><i class="fa fa-tag"></i> 数学</a>
+          
+            <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%95%B0%E5%AD%A6/" rel="tag"><i class="fa fa-tag"></i> 计算机数学</a>
+          
+            <a href="/tags/%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90/" rel="tag"><i class="fa fa-tag"></i> 算法分析</a>
+          
+            <a href="/tags/%E6%8E%92%E5%BA%8F/" rel="tag"><i class="fa fa-tag"></i> 排序</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2025/07/26/%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%E6%96%B9%E6%B3%95/" rel="next" title="算法分析方法">
+                <i class="fa fa-chevron-left"></i> 算法分析方法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/yanfeng-nie" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%A0%86%E6%8E%92%E5%BA%8F"><span class="nav-text">一、堆排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E5%A0%86"><span class="nav-text">1、堆</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81%E5%A0%86%E7%9A%84%E7%BB%B4%E6%8A%A4-max-heapify"><span class="nav-text">2、堆的维护 max_heapify</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%881%EF%BC%89%E5%9F%BA%E6%9C%AC%E6%80%9D%E6%83%B3"><span class="nav-text">（1）基本思想</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%882%EF%BC%89%E9%80%92%E5%BD%92%E7%89%88%E6%9C%AC"><span class="nav-text">（2）递归版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%883%EF%BC%89%E5%BE%AA%E7%8E%AF%E7%89%88%E6%9C%AC"><span class="nav-text">（3）循环版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%884%EF%BC%89%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="nav-text">（4）复杂度</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81%E5%BB%BA%E5%A0%86-build-max-heap"><span class="nav-text">3、建堆 build_max_heap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%881%EF%BC%89%E5%9F%BA%E6%9C%AC%E6%80%9D%E6%83%B3-1"><span class="nav-text">（1）基本思想</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%882%EF%BC%89%E4%BB%A3%E7%A0%81"><span class="nav-text">（2）代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%883%EF%BC%89%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="nav-text">（3）复杂度</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E3%80%81%E5%A0%86%E6%8E%92%E5%BA%8F-heap-sort"><span class="nav-text">4、堆排序 heap_sort</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%881%EF%BC%89%E5%9F%BA%E6%9C%AC%E6%80%9D%E6%83%B3-2"><span class="nav-text">（1）基本思想</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%882%EF%BC%89%E4%BB%A3%E7%A0%81-1"><span class="nav-text">（2）代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E3%80%81%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81%EF%BC%88%E5%AF%B9%E6%8B%8D%E7%89%88%EF%BC%89"><span class="nav-text">5、完整代码（对拍版）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F"><span class="nav-text">二、快速排序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E7%BA%BF%E6%80%A7%E6%97%B6%E9%97%B4%E6%8E%92%E5%BA%8F"><span class="nav-text">三、线性时间排序</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yanfeng Nie</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+
+  // Custom styles.
+//TOC
+.post-toc .nav .nav-child {
+  display: block;
+}
+.sidebar-toggle {
+  left: 30px;
+}
+
+.sidebar {
+  left: 0px;
+}
+</body>
+</html>
