@@ -9,7 +9,7 @@
 # Basic Site Settings
 locale                   : "en-US"
 site_theme               : "default" # Currently available options are "default", "air"
-title                    : "Yanfeng Nie"
+title                    : "Homepage|Yanfeng Nie"
 title_separator          : "-"
 name                     : &name "Yanfeng Nie（聂延丰）"
 description              : &description "personal description"
