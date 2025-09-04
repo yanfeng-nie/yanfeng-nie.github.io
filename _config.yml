@@ -22,12 +22,12 @@ repository               : "academicpages/academicpages.github.io"
 #               Additional customization can be done by editing /_includes/author-profile.html
 author:
   # Biographic information
-  avatar           : "profile.png"
+  avatar           : "profile.jpg"
   name             : "Yanfeng Nie"
   pronouns         : # example: "she/her"  
   bio              : "Undergraduate from School of Future Technology, Huazhong University of Science and Technology"
   location         : "Wuhan, China"
-  employer         : "Huazhong University"
+  employer         : "Huazhong University of Science and Technology"
   uri              : # URL
   email            : "nieyanfeng@hust.edu.cn" 
 

@@ -5,6 +5,10 @@ title: "Education & Honor"
 author_profile: true
 ---
 
+# Honor
+
+(Lack data)
+
 # Education
 
 -   ## High School
@@ -26,6 +30,4 @@ author_profile: true
     School of Future Technology and [Wuhan National Laboratory for Optoelectronics](https://wnlo.hust.edu.cn/index.htm)
 
     Under [Data Storage and Application Laboratory](http://stlab.wnlo.hust.edu.cn/index.jsp)
-
-# Honor
 
