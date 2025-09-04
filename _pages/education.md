@@ -3,7 +3,6 @@ layout: archive
 permalink: /education/
 title: "Education & Honor"
 author_profile: true
-
 ---
 
 # Education
