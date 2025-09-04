@@ -1,6 +1,6 @@
 ---
 layout: archive
-permalink: /education
+permalink: /education/
 title: "Education & Honor"
 author_profile: true
 
