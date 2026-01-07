@@ -15,7 +15,7 @@ Hi there! It's **Yanfeng Nie**(or you can call me **Hank Nie**) from School of F
 
 ## 面向人形机器人的大模型存算一体系统关键技术研究
 
-<u>*Key Technology Research on Compute-In-Memory Systems of Large Scale Models For Humanoid Robots*</u>
+*<u>Key Technology Research on Compute-In-Memory Systems of Large Scale Models For Humanoid Robots</u>*
 
 This project is sponsored by **School of Future Technology, HUST** and **Wuxi Municipal People's Government**. 
 
