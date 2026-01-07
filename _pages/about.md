@@ -1,6 +1,6 @@
 ---
 permalink: /
-title: "Welcome To My Page"
+title: "Hello, It's me"
 author_profile: true
 redirect_from: 
   - /about/
@@ -29,7 +29,7 @@ My Position: ***Core Member***
 
 This project is sponsored by **College Students' Innovative Entrepreneurial Training Plan Program(CIE-TP)**.
 
-Project Number: []
+Project Number: [WLJSX2026023]
 
 My Position: ***Project Leader***
 
