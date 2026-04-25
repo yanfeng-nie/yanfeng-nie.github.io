@@ -1,0 +1,61 @@
+{% comment %}
+  Pixel-style publication card.
+  Place at: _includes/pixel-publication-card.html
+  Used by: home-pixel.html and any archive page that loops publications.
+
+  Reads frontmatter from each _publications/*.md file:
+    pub_type:  "journal" | "book" | "preprint" | "thesis" | "conference"
+    rarity:    integer 1..5  (defaults to 3)
+    venue:     string (e.g. "ACM TOG vol. 45")
+    authors:   string (e.g. "<em>A. Blockworthy</em>, R. Stonehill")
+    paperurl:  PDF link
+    codeurl:   code repo
+    citation:  bibtex/cite-as text
+{% endcomment %}
+
+{% assign type = post.pub_type | default: "journal" | downcase %}
+{% assign rarity = post.rarity | default: 3 | plus: 0 %}
+
+<article class="pixel-pub-card">
+  <div class="pixel-pub-banner {{ type }}">
+    <span class="pixel-pub-type">{{ type | upcase }}</span>
+    <div class="pixel-pub-rarity">
+      {% for i in (1..5) %}
+        {% if i <= rarity %}
+          <span class="full"></span>
+        {% else %}
+          <span></span>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  <div class="pixel-pub-body">
+    <h3 class="pixel-pub-title">
+      {% if post.url %}
+        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+      {% else %}
+        {{ post.title }}
+      {% endif %}
+    </h3>
+    {% if post.authors %}
+      <p class="pixel-pub-authors">{{ post.authors }}</p>
+    {% endif %}
+    {% if post.venue %}
+      <p class="pixel-pub-venue">{{ post.venue | markdownify | remove: '<p>' | remove: '</p>' }}</p>
+    {% endif %}
+    <div class="pixel-pub-actions">
+      {% if post.paperurl %}
+        <a class="pixel-pub-btn gold" href="{{ post.paperurl }}">[PDF]</a>
+      {% endif %}
+      {% if post.codeurl %}
+        <a class="pixel-pub-btn" href="{{ post.codeurl }}">[CODE]</a>
+      {% endif %}
+      {% if post.slidesurl %}
+        <a class="pixel-pub-btn" href="{{ post.slidesurl }}">[SLIDES]</a>
+      {% endif %}
+      {% if post.url %}
+        <a class="pixel-pub-btn" href="{{ post.url | relative_url }}">[DETAILS]</a>
+      {% endif %}
+    </div>
+  </div>
+</article>

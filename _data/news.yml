@@ -1,0 +1,21 @@
+# Server News for the homepage news board.
+# Place at: _data/news.yml
+# Edit this file to update the homepage news. Items render top to bottom.
+#
+# Fields per item:
+#   date: short label shown in dark pill (e.g. "APR '26")
+#   text: markdown body — use **bold** for emphasis
+#   new:  set to true to show the blinking [NEW] badge
+
+- date: "APR '26"
+  new: true
+  text: "Our paper *Topological Invariants in Voxel-Based Erosion Models* was **accepted at SIGGRAPH 2026**. See you in Tokyo."
+
+- date: "MAR '26"
+  text: "Awarded the **NSF CAREER Grant** for *Multi-scale Geomorphology via Voxel Methods* — graduate funding now open, see the lab page."
+
+- date: "FEB '26"
+  text: "Gave a keynote at **EuroVis 2026** on visualizing 10B-particle simulations on commodity hardware."
+
+- date: "JAN '26"
+  text: "Open positions: **2 PhD students** (Fall '26) and **1 postdoc** in computational topology & simulation. Apply by May 1."

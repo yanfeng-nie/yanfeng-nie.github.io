@@ -1,0 +1,82 @@
+{% comment %}
+  Inventory hotbar of social/contact links.
+  Place at: _includes/pixel-hotbar.html
+  Reads from site.author in _config.yml:
+    email, github, googlescholar, linkedin, orcid, twitter
+{% endcomment %}
+
+<div class="pixel-hotbar">
+  {% if site.author.email %}
+    <a class="pixel-slot" href="mailto:{{ site.author.email }}">
+      <svg viewBox="0 0 16 16">
+        <rect x="1" y="3" width="14" height="10" fill="#f5edd1" stroke="#2a2218"/>
+        <path d="M1 3 L8 9 L15 3" stroke="#2a2218" fill="none" stroke-width="1"/>
+      </svg>
+      <span class="pixel-tooltip">EMAIL</span>
+    </a>
+  {% endif %}
+  {% if site.author.github %}
+    <a class="pixel-slot" href="https://github.com/{{ site.author.github }}">
+      <svg viewBox="0 0 16 16">
+        <rect x="2" y="2" width="12" height="12" fill="#2a2218"/>
+        <rect x="4" y="4" width="2" height="6" fill="#f5edd1"/>
+        <rect x="7" y="4" width="2" height="2" fill="#f5edd1"/>
+        <rect x="7" y="7" width="2" height="3" fill="#f5edd1"/>
+        <rect x="10" y="4" width="2" height="2" fill="#f5edd1"/>
+      </svg>
+      <span class="pixel-tooltip">GITHUB</span>
+    </a>
+  {% endif %}
+  {% if site.author.googlescholar %}
+    <a class="pixel-slot" href="{{ site.author.googlescholar }}">
+      <svg viewBox="0 0 16 16">
+        <rect x="2" y="2" width="12" height="12" fill="#3ec678"/>
+        <rect x="5" y="5" width="2" height="6" fill="#fff"/>
+        <rect x="8" y="5" width="2" height="6" fill="#fff"/>
+      </svg>
+      <span class="pixel-tooltip">SCHOLAR</span>
+    </a>
+  {% endif %}
+  {% if site.author.linkedin %}
+    <a class="pixel-slot" href="https://linkedin.com/in/{{ site.author.linkedin }}">
+      <svg viewBox="0 0 16 16">
+        <rect x="2" y="2" width="12" height="12" fill="#7ec0ee"/>
+        <rect x="5" y="6" width="2" height="5" fill="#fff"/>
+        <rect x="5" y="4" width="2" height="1" fill="#fff"/>
+        <rect x="9" y="6" width="2" height="5" fill="#fff"/>
+      </svg>
+      <span class="pixel-tooltip">LINKEDIN</span>
+    </a>
+  {% endif %}
+  {% if site.author.orcid %}
+    <a class="pixel-slot" href="{{ site.author.orcid }}">
+      <svg viewBox="0 0 16 16">
+        <rect x="2" y="2" width="12" height="12" fill="#f5c542"/>
+        <rect x="5" y="5" width="6" height="6" fill="#2a2218"/>
+        <rect x="6" y="6" width="4" height="4" fill="#f5c542"/>
+        <rect x="7" y="7" width="2" height="2" fill="#2a2218"/>
+      </svg>
+      <span class="pixel-tooltip">ORCID</span>
+    </a>
+  {% endif %}
+  {% if site.author.twitter %}
+    <a class="pixel-slot" href="https://twitter.com/{{ site.author.twitter }}">
+      <svg viewBox="0 0 16 16">
+        <rect x="2" y="2" width="12" height="12" fill="#7ec0ee"/>
+        <rect x="4" y="5" width="8" height="2" fill="#fff"/>
+        <rect x="5" y="7" width="6" height="2" fill="#fff"/>
+        <rect x="6" y="9" width="4" height="2" fill="#fff"/>
+      </svg>
+      <span class="pixel-tooltip">TWITTER</span>
+    </a>
+  {% endif %}
+  <a class="pixel-slot" href="{{ '/cv/' | relative_url }}">
+    <svg viewBox="0 0 16 16">
+      <rect x="3" y="2" width="10" height="12" fill="#f5edd1" stroke="#2a2218"/>
+      <rect x="5" y="5" width="6" height="1" fill="#2a2218"/>
+      <rect x="5" y="7" width="6" height="1" fill="#2a2218"/>
+      <rect x="5" y="9" width="4" height="1" fill="#2a2218"/>
+    </svg>
+    <span class="pixel-tooltip">CV</span>
+  </a>
+</div>

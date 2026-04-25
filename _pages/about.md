@@ -1,7 +1,8 @@
 ---
 permalink: /
 title: "Hello, It's me"
-author_profile: true
+layout: home-pixel
+author_profile: false
 redirect_from: 
   - /about/
   - /about.html

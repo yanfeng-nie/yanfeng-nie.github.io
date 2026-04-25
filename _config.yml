@@ -11,7 +11,7 @@ locale                   : "en-US"
 site_theme               : "default" # Currently available options are "default", "air"
 title                    : "Homepage|Yanfeng Nie"
 title_separator          : "-"
-name                     : &name "Yanfeng Nie（聂延丰）"
+name                     : &name "Yanfeng Nie"
 description              : &description "personal description"
 url                      : https://yanfeng-nie.github.io # the base hostname & protocol for your site e.g. "https://[your GitHub username].github.io" or if you already have some other page hosted on Github then use "https://[your GitHub username].github.io/[Your Repo Name]"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
@@ -30,6 +30,16 @@ author:
   employer         : "Huazhong University of Science and Technology"
   uri              : # URL
   email            : "nieyanfeng@hust.edu.cn" 
+  
+  affiliations:
+    - label: "School of Future Technology"
+      style: "green"
+    - label: "Huazhong University of Science and Technology"
+      style: ""
+    - label: "DSAL"
+      style: "gold"
+    - label: ""
+      style: "red"
 
   # Academic websites
   academia         : # URL
